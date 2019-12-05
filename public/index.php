@@ -10,24 +10,14 @@ use App\modules\Feedback;
 include dirname(__DIR__) . '/services/Autoload.php';
 spl_autoload_register([new Autoload(), 'loadClass']);
 
-$db = new DB();
 
 
-$good = new Good($db);
+$good = new Good();
+$good->id = 11;
+$good->name_product = "name2";
+$good->img_dir = "image24";
+$good->description_short = "blalbalalbbalabl";
+$good->price_product = 250 ;
 
-var_dump($good->getAll());
-var_dump($good->getOne(2));
 
-$user = new User($db);
-var_dump($user->getAll());
-var_dump($user->getOne(15));
 
-$order = new Order($db);
-
-var_dump($order->getAll());
-var_dump($order->getOne(39));
-
-$feedback = new Feedback($db);
-
-var_dump($feedback->getAll());
-var_dump($feedback->getOne(1));

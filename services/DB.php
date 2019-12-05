@@ -2,44 +2,87 @@
 
 
 namespace App\services;
-
-
+use App\modules\Good;
+use App\traits\TSingleton;
+use App\modules\Model;
 
 class DB implements IDB
 {
-    function connect()
-    {
-        static $link;
-        if (empty($link)) {
-            $link = mysqli_connect('localhost', 'root', 'root', 'onlineShop');
+    use TSingleton;
+
+    private $config = [
+        'driver' => 'mysql',
+        'host' => 'localhost',
+        'db' => 'onlineshop',
+        'charset' => 'UTF8',
+        'username' => 'root',
+        'password' => 'root',
+
+    ];
+    protected $connect;
+
+    protected function getConnection($params = []){
+
+        if(empty($this->connect)){
+            $this->connect = new \PDO(
+                $this->getPrepareDsnString(),
+                $this->config['username'],
+                $this->config['password']
+
+            );
+
+            $this->connect->setAttribute
+            (
+                \PDO::ATTR_DEFAULT_FETCH_MODE,
+                \PDO::FETCH_ASSOC);
         }
-        return $link;
+
+        return $this->connect;
     }
 
-    public function find(string $sql)
+    protected function getPrepareDsnString()
+    {
+        return sprintf(
+            '%s:host=%s;dbname=%s;charset=%s',
+            $this->config['driver'],
+            $this->config['host'],
+            $this->config['db'],
+            $this->config['charset']
+        );
+
+
+    }
+
+    protected function query($sql, $params = [] )
+    {
+        $PDOStatement = $this->getConnection()->prepare($sql);
+        $PDOStatement->execute($params);
+        return $PDOStatement;
+    }
+
+    public function find(string $sql,$params = [])
     {
 
-         return (mysqli_fetch_assoc( mysqli_query($this->connect(), $sql)));
+        return $this->query($sql, $params)->fetch();
 
 
 
     }
 
-    public function findAll(string $sql)
+    public function findAll(string $sql )
     {
-      $result = mysqli_query($this->connect(), $sql);
-        $allResults = [];
-        while ($each  = mysqli_fetch_assoc($result)){
-            array_push($allResults, $each);
-        }
-        return $allResults;
+        return $this->query($sql )->fetchAll();
     }
 
-
-    public function insert()
+    public function execute(string $sql, $params = [])
     {
-        // TODO: Implement insert() method.
+        return $this->query($sql, $params);
     }
+
+
+
+
+
 
 
 }
