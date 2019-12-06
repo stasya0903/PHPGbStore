@@ -23,6 +23,13 @@ if (class_exists($ControllerClass)){
 }
 
 $user = new User;
+//$user->id = 63;
+$user->name = "Костя";
+$user->login = "kost";
+//var_dump($user->save());
 
+//var_dump($user->getOne(61));
+
+$user->delete();
 
 

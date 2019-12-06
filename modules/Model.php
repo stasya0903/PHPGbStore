@@ -49,7 +49,7 @@ abstract class Model
         $params = [];
 
         foreach ($this as $property => $value) {
-            if ($property == 'bd' || empty($value)) {
+            if ($property == 'bd' || empty($value) ) {
                 continue;
             }
             $dataToInsert[] = $property;
@@ -77,21 +77,28 @@ abstract class Model
     protected function update($params = [])
     {
 
-        $tableName = $this->getTableName();
+
         $allDataToInsert = [];
         $allValues = [];
 
-        foreach ($params as $data => $value ) {
+        foreach ($this as $data => $value ) {
 
-            $allValues[":${data}"] = $value;
-            if ($data == "id") {
+            if ($data == 'bd' || empty($value) ) {
                 continue;
             }
+            if($data == 'id'){
+                $allValues[":${data}"] = $value;
+                continue;
+            }
+
+            $allValues[":${data}"] = $value;
             array_push($allDataToInsert, "${data} = :{$data}");
 
         }
 
         $strToSetUpdate = implode(", ",$allDataToInsert);
+
+        $tableName = $this->getTableName();
 
         $sql = "UPDATE {$tableName} SET  {$strToSetUpdate} WHERE id = :id ";
 
@@ -99,14 +106,17 @@ abstract class Model
 
     }
 
-    public function save($params)
-    {
-        if ($this->id) {
-            $this->insert($params);
-            return;
-        }
+    public function save()
 
-        $this->update();
+    {
+        $id = $this->id ?: '';
+
+        if (!empty($id) && $this->getOne($id)) {
+
+            return $this->update();
+
+        }
+        return $this->insert();
     }
 
 }
