@@ -7,9 +7,13 @@ use App\services\DB;
 
 /**
  * Class Model
+ *  * @property int $id
  */
 abstract class Model
 {
+    /**
+     * @var DB
+     */
 
     protected $bd;
 
@@ -24,56 +28,53 @@ abstract class Model
      * @return string
      */
     abstract public function getTableName(): string;
-    abstract public function getClassName(): string;
 
     public function getOne($id)
     {
         $tableName = $this->getTableName();
         $sql = "SELECT * FROM {$tableName} WHERE id = :id";
-        return $this->bd->find($sql,[':id' => $id ]);
+        return $this->bd->queryObj($sql,static::class,[':id' => $id ]);
     }
 
     public function getAll()
     {
         $tableName = $this->getTableName();
         $sql = "SELECT * FROM {$tableName}";
-        return $this->bd->findAll($sql);
+        return $this->bd->queryObjs($sql, static::class);
     }
 
-    public function insert($params = [])
+    protected function insert($params = [])
     {
-        $tableName = $this->getTableName();
+        $dataToInsert = [];
+        $params = [];
 
-        $allDataToInsert = [];
-        $allValues = [];
-        foreach ($params as $data => $value ) {
-
-            if ($data == "id"){
+        foreach ($this as $property => $value) {
+            if ($property == 'bd' || empty($value)) {
                 continue;
             }
-
-            array_push($allDataToInsert, $data);
-            $allValues[":${data}"] = $value;
-
+            $dataToInsert[] = $property;
+            $params[":{$property}"] = $value;
         }
-        $data = implode (", ", $allDataToInsert);
-        $values = implode(",:", $allDataToInsert);
 
-        $sql = "INSERT INTO {$tableName}( {$data}) VALUES (:$values)";
+        $tableName = $this->getTableName();
 
-        return $this->bd->execute($sql, $allValues);
+        $data = implode (", ", $dataToInsert);
+        $values = implode(", ", array_keys($params));
+
+        $sql = "INSERT INTO {$tableName}( {$data}) VALUES ($values)";
+
+       $this->bd->execute($sql, $params);
+       $this->id = $this->bd->lastInsertId();
     }
 
     public function delete($params = [])
     {
-
         $tableName = $this->getTableName();
-        $sql = "DELETE FROM {$tableName} WHERE name_product= :name ";
-        return $this->bd->execute($sql, [':name' => $params['name_product'] ] );
-
+        $sql = "DELETE FROM {$tableName} WHERE id= :id ";
+        return $this->bd->execute($sql, [':id' => $this->id ] );
     }
 
-    public function update($params = [])
+    protected function update($params = [])
     {
 
         $tableName = $this->getTableName();
@@ -100,12 +101,12 @@ abstract class Model
 
     public function save($params)
     {
-        if ($this->getOne($params["id"])) {
-            $this->update($params);
+        if ($this->id) {
+            $this->insert($params);
             return;
         }
 
-        $this->insert();
+        $this->update();
     }
 
 }

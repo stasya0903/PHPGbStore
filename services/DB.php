@@ -49,8 +49,6 @@ class DB implements IDB
             $this->config['db'],
             $this->config['charset']
         );
-
-
     }
 
     protected function query($sql, $params = [] )
@@ -62,11 +60,7 @@ class DB implements IDB
 
     public function find(string $sql,$params = [])
     {
-
         return $this->query($sql, $params)->fetch();
-
-
-
     }
 
     public function findAll(string $sql )
@@ -74,15 +68,30 @@ class DB implements IDB
         return $this->query($sql )->fetchAll();
     }
 
-    public function execute(string $sql, $params = [])
+    public function execute(string $sql,  $params = [])
     {
         return $this->query($sql, $params);
     }
 
+    public function queryObj(string $sql,$class, $params = [])
+    {
+        $PDOStatement= $this->query($sql, $params );
+        $PDOStatement-> setFetchMode(\PDO::FETCH_CLASS, $class);
+        return $PDOStatement->fetch();
+    }
 
+    public function queryObjs(string $sql,$class, $params = [])
+    {
+        $PDOStatement= $this->query($sql );
+        $PDOStatement-> setFetchMode(\PDO::FETCH_CLASS, $class);
+        return $PDOStatement->fetchAll();
 
+    }
 
-
+    public function lastInsertId()
+    {
+        return $this->getConnection()->lastInsertId();
+    }
 
 
 }

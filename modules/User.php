@@ -2,6 +2,13 @@
 
 
 namespace App\modules;
+/**
+ * Class User
+ * @package App\modules
+ * @property int $id
+ * @property string $login
+ * @property string $password
+ */
 
 
 class User extends Model
@@ -15,5 +22,15 @@ class User extends Model
     {
         return 'users';
     }
+
+    public function getAutUser()
+    {
+        return <<<php
+        <h1>{$this->id} => {$this->login}</h1>
+php;
+
+    }
+
+
 
 }
