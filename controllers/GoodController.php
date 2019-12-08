@@ -107,6 +107,7 @@ class GoodController
         }
 
         $good->save();
+
         header('location: ' . $_SERVER['HTTP_REFERER']);
     }
 

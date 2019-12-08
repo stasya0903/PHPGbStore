@@ -76,8 +76,6 @@ abstract class Model
 
     protected function update($params = [])
     {
-
-
         $allDataToInsert = [];
         $allValues = [];
 
