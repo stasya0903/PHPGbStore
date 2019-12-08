@@ -2,6 +2,7 @@
     <h1> <?=$user->login ?></h1>
 </div>
 <script>
-    var a = '<?= $title?>';
+    let title = '<?= $title?>';
+    let id = '<?= $id?>';
 </script>
 

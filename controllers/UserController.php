@@ -42,7 +42,8 @@ class UserController
 
         $user = ($oUser = new User)->getOne($id);
         return $this->render('user',  ['user'=>$user,
-                                                'title'=>$user->id]);
+                                                'title'=>$user->id,
+                                                'id'=>$user->id]);
 
     }
 
