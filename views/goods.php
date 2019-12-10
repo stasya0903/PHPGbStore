@@ -20,7 +20,7 @@ foreach ($goods as $good) : ?>
             <img src="https://via.placeholder.com/300x250" class="card-img" alt="...">
             <div class="card-img-overlay">
                 <h5 class="card-title">Загрузить картинку</h5>
-                <form enctype="multipart/form-data"  method="POST">
+                <form enctype="multipart/form-data"  method="POST" action="?c=good&a=addToDB">
                     <input name="userfile" type="file" />
 
             </div>
