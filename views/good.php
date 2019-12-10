@@ -9,12 +9,11 @@
                  <div class="card-body">
                      <!-- Тип кодирования данных, enctype, ДОЛЖЕН БЫТЬ указан ИМЕННО так -->
                      <form enctype="multipart/form-data" action="?c=good&a=addToDB&id=<?= $good->id ?>" method="POST">
-                         <!-- Название элемента input определяет имя в массиве $_FILES -->
                             <h6 >Обновить Картинку</h6>
                             <input name="userfile" type="file" ><br><br>
-                            <input name="name_product" type ="text" class="form-control" placeholder="<?= $good->name_product ?> ">
-                            <input name="price_product" type ="number" class="form-control"placeholder="<?= $good->price_product ?>" >
-                            <input name="description_short" type ="text" class="form-control" placeholder="<?= $good->description_short ?> ">
+                            <input name="name_product" type ="text" class="form-control" value="<?= $good->name_product ?> ">
+                            <input name="price_product" type ="number" class="form-control"value="<?= $good->price_product ?>" >
+                            <input name="description_short" type ="text" class="form-control" value="<?= $good->description_short ?> ">
                             <input type="submit" class="comeBackBtn" value="Изменить продукт" >
                      </form>
 

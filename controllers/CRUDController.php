@@ -27,6 +27,7 @@ class CRUDController extends Controller
         {
             $this->allAction();
         }
+
         $item = $this->model->getOne($id);
         return $this->render("$this->item", ["$this->item" => $item]);
     }
@@ -35,23 +36,27 @@ class CRUDController extends Controller
     {
         if($_SERVER['REQUEST_METHOD'] != "POST") {
 
+            if ($id = $this->getID()) {
+                $item = ($this->model)->getOne($id);
+                return $this->render($this->item."Update", ["user"=>$item]);
+            }
+
             return $this->render($this->item."Add");
         }
 
         $item = $this->model;
-        $item->id = $this->getID();
 
-        if (!empty ($_FILES)){
-            $item->img_dir = $this->uploadPic();
+        if ($img_dir = $this->uploadPic()){
+            $item->img_dir = $img_dir;
+        }
+        if ($id = $this->getID()){
+            $item->id = $id ;
         }
 
-        $propertyToUpdate = $_POST;
+        $propertyToUpdate = $this->getPostArray();
 
         foreach ($propertyToUpdate as $property => $value)
         {
-            if (empty($value)){
-                continue;
-            }
             if ($value == 'password'){
                 $item->$property =  password_hash($propertyToUpdate['password'], PASSWORD_DEFAULT);
                 continue;
@@ -88,8 +93,16 @@ class CRUDController extends Controller
     }
 
     private function uploadPic(){
+        if(empty($_FILES)) {
+            return false;
+        }
         $file = dirname(__DIR__ ). "/public/img/". $_FILES['userfile']['name'];
         copy($_FILES['userfile']['tmp_name'],$file);
         return $_FILES['userfile']['name'];
+    }
+
+    private function getPostArray()
+    {
+        return $_POST;
     }
 }
