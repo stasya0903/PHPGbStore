@@ -6,9 +6,10 @@ use App\modules\User;
 use App\modules\Order;
 use App\modules\Feedback;
 
-
-include dirname(__DIR__) . '/services/Autoload.php';
-spl_autoload_register([new Autoload(), 'loadClass']);
+include dirname(__DIR__) . '/vendor/autoload.php';
+//include dirname(__DIR__) . '/services/Autoload.php';
+//var_dump(dirname(__DIR__) . '/services/Autoload.php');
+//spl_autoload_register([new Autoload(), 'loadClass']);
 
 $controllerName = "user";
 $actionName = '';
@@ -25,7 +26,7 @@ if (!empty($_GET['a'])){
 $ControllerClass = 'App\\controllers\\' . ucfirst($controllerName) . 'Controller' ;
 
 if (class_exists($ControllerClass)){
-    $controller = new $ControllerClass;
+    $controller = new $ControllerClass(new \App\services\renders\TmpRender());
     echo $controller -> run($actionName);
 }
 

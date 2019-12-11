@@ -2,7 +2,8 @@
 
 
 namespace App\controllers;
-
+use App\services\renders\IRender;
+use App\services\renders\TmpRender;
 
 abstract class Controller
 {
@@ -10,6 +11,7 @@ abstract class Controller
 
     public function run($actionName)
     {
+
         if (empty($actionName)) {
             $actionName = $this->defaultAction;
         }
@@ -24,16 +26,15 @@ abstract class Controller
         header('Location:?');
     }
 
-    protected function render($template, $params=[])
+    protected function render($template, $params = [])
     {
-        $content = $this->renderTmpl($template, $params);
-        return $this->renderTmpl('layouts/main', ['content'=>$content]);
+        return $this->render->render($template, $params);
     }
-    protected function renderTmpl($template, $params=[])
-    {
-        ob_start();
-        extract($params);
-        include dirname(__DIR__) . '/views/' . $template . '.php';
-        return ob_get_clean();
-    }
+
+
+
+
+
+
+
 }

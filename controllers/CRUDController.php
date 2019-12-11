@@ -5,24 +5,30 @@ namespace App\controllers;
 
 
 use App\modules\Good;
+use App\services\renders\IRender;
+use App\services\renders\TmpRender;
 
 class CRUDController extends Controller
 {
     protected $model;
     protected $modelName = "";
     protected $item = "";
+    protected $render;
 
-    public function __construct()
+    public function __construct(IRender$render)
     {
+        $this->render = $render;
         $this->model = new $this->modelName;
     }
     public function allAction()
+        //TODO  create separte service
     {
         $items = $this->model->getAll();
         return $this->render("{$this->item}s", ["{$this->item}s" => $items]);
     }
     public function oneAction()
     {
+        //TODO  create separte service
         if (!$id = $this->getID())
         {
             $this->allAction();
@@ -34,6 +40,7 @@ class CRUDController extends Controller
 
     public function addToDBAction ()
     {
+        //TODO  create separte service
         if($_SERVER['REQUEST_METHOD'] != "POST") {
 
             if ($id = $this->getID()) {
@@ -71,7 +78,7 @@ class CRUDController extends Controller
 
     public function deleteFromDBAction ()
     {
-
+        //TODO  create separte service
         if (!$id = $this->getID())
         {
             header('location: ' . $_SERVER['HTTP_REFERER']);
