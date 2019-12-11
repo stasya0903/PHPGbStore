@@ -1,28 +1,28 @@
 <?php
 
 namespace App\services\renders;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+
 
 class TwigRender implements IRender
 {
+    protected $loader;
+    protected $twig;
+    protected $template;
+
     public function render($template, $params = [])
     {
-        $content = $this->renderTmpl($template, $params);
-        return  $this->renderTmpl(
-            'layouts/main',
-            ['content' => $content]
-        );
-    }
+        $template .= ".php.twig";
+        $this->loader = new FilesystemLoader(dirname(dirname(__DIR__)) . '/templates/');
+        $twig = new Environment($this->loader, [
+           // 'cache' => '/path/to/compilation_cache',
+        ]);
 
-    /**
-     * @param $template
-     * @param array $params ["users" => 123, "tr" => [1,5,6]]
-     * @return false|string
-     */
-    public function renderTmpl($template, $params = [])
-    {
-        ob_start();
-        extract($params);
-        include dirname(dirname(__DIR__)) . '/views/' . $template . '.php';
-        return ob_get_clean();
+        return  $twig->render($template, $params);
+
     }
 }
+
+
+
