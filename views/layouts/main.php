@@ -19,7 +19,7 @@
     </ol>
 
 <div class="container">
-    <?= $content ?>
+
 </div>
 
 

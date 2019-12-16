@@ -81,7 +81,7 @@ abstract class Model
 
         foreach ($this as $data => $value ) {
 
-            if ($data == 'bd' || empty($value) ) {
+            if ($data == 'bd') {
                 continue;
             }
             if($data == 'id'){
@@ -90,7 +90,7 @@ abstract class Model
             }
 
             $allValues[":${data}"] = $value;
-            array_push($allDataToInsert, "${data} = :{$data}");
+            $allDataToInsert[]= "${data} = :{$data}";
 
         }
 
