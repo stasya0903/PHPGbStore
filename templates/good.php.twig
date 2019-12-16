@@ -4,11 +4,11 @@
     <div class="card mb-3 text-center" style="width:50rem" >
         <div class="row no-gutters">
             <div class="col-md-6">
-                <img  class="card-img" src="img/{{good.img_dir}}">
+                <img  class="card-img" src="/img/{{good.img_dir}}">
             </div>
             <div class="col-md-6">
                  <div class="card-body">
-                     <form enctype="multipart/form-data" action="?c=good&a=addToDB&id={{good.id}}" method="POST">
+                     <form enctype="multipart/form-data" action="/good/addToDB?id={{good.id}}" method="POST">
                             <h6 >Обновить Картинку</h6>
                             <input name="userfile" type="file" ><br><br>
                             <input name="name_product" type ="text" class="form-control" value="{{good.name_product}} ">
@@ -20,7 +20,7 @@
                  </div>
             </div>
         </div>
-        <a href="?c=good"><button class="comeBackBtn">К Каталогу</button></a>
+        <a href="/good"><button class="comeBackBtn">К Каталогу</button></a>
     </div>
 
 {% endblock %}

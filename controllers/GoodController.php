@@ -10,15 +10,7 @@ use App\modules\User;
 class GoodController extends CRUDController
 {
     public $modelName = Good::class;
-    public $item = "good";
-
-
-
-
-
-
-
-
-
+    public $nameSingle = "good";
+    public $namePlr = "goods";
 
 }

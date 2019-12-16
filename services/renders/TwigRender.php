@@ -12,12 +12,12 @@ class TwigRender implements IRender
 {
     protected $twig;
 
-
     public function __construct()
     {
-        $loader = new FilesystemLoader([
-            dirname(dirname(__DIR__)) . '/templates',
-        ]);
+        $loader = new FilesystemLoader([dirname(dirname(__DIR__)) . '/templates/',
+                dirname(dirname(__DIR__)) . '/templates',]
+
+        );
 
         $this->twig = new Environment($loader);
     }
@@ -25,7 +25,12 @@ class TwigRender implements IRender
     public function render($template, $params = [])
     {
         $template .= '.php.twig';
-        return $this->twig->render($template, $params);
+        try {
+            return $this->twig->render($template, $params);
+        } catch (LoaderError $e) { echo $e->getMessage();
+        } catch (RuntimeError $e) { echo $e->getMessage();
+        } catch (SyntaxError $e) { echo $e->getMessage();
+        }
     }
 }
 

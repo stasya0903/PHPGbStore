@@ -18,6 +18,7 @@ class Order extends Model
     public function getOne($id)
     {
         $tableName = $this->getTableName();
+
         $sql = "SELECT 
                     o.id AS ordersId, oi.id AS orderListId
                 FROM 
@@ -37,10 +38,5 @@ class Order extends Model
         return $this->bd->findAll($sql);
     }
 
-    public function getSumOrders()
-    {
-        $sql = "";
-        return $this->bd->findAll($sql);
-    }
 
 }
