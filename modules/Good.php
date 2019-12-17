@@ -6,11 +6,7 @@ namespace App\modules;
 
 class Good extends Model
 {
-    //public $id;
-    //public $name_product;
-    //public $img_dir;
-   // public $description_short;
-   // public $price_product;
+
     /**
      * Возвращает имя таблицы в базе данных
      * @return string

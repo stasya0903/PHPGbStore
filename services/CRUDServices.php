@@ -2,26 +2,49 @@
 
 
 namespace App\services;
-
+use App\modules\Model;
+use App\services\renders\IRender;
 
 class CRUDServices
 {
+
+    /**
+     * @param Model $model
+     * @param IRender $render
+     * @param string $nameSng
+     * @return mixed
+     */
     public function all($model, $render, $nameSng)
     {
         $items = $model->getAll();
         return $render->render("$nameSng", ["$nameSng" => $items]);
     }
 
+    /**
+     * @param Model $model
+     * @param IRender $render
+     * @param Request $request
+     * @param string $nameSng
+     * @return mixed
+     */
+
     public function one($model,$render,$request, $nameSng)
     {
         if (!$id = $request->get("id"))
         {
-            $this->allAction();
+           header("location:./");
         }
 
         $item = $model->getOne($id);
         return $render->render("$nameSng", ["$nameSng" => $item]);
     }
+
+    /**
+     * @param Request $request
+     * @param IRender $render
+     * @param Model $model
+     * @param string $nameSng
+     */
     public function addToDB ($request,$render, $model, $nameSng)
     {
         if(!$request->isPost()) {
@@ -57,6 +80,12 @@ class CRUDServices
         return header('Location:/' . $nameSng);
 
     }
+
+    /**
+     * @param Model $model
+     * @param Request $request
+     * @param string $nameSng
+     */
 
     public function delete ($model,$request,$nameSng)
     {
