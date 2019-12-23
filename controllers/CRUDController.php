@@ -3,13 +3,20 @@
 
 namespace App\controllers;
 
+use App\entities\Entity;
+use App\Repositories\Repository;
+use App\services\CRUDService;
 use App\services\renders\IRender;
 use App\services\Request;
 
 
-
-
+/**
+ * @property IRender render;
+ * @property CRUDService service;
+ * @property Repository repository;
+ */
 abstract class CRUDController extends Controller
+
 {
     protected $nameSingle = "";
     protected $namePlr = "";
@@ -18,8 +25,9 @@ abstract class CRUDController extends Controller
     protected $service;
     protected $repository;
 
-    abstract public function getRepository():object ;
-    abstract public function getService():object;
+    abstract public function getRepository();
+
+    abstract public function getService();
 
     /**
      * @param IRender $render
@@ -36,23 +44,26 @@ abstract class CRUDController extends Controller
     public function allAction()
     {
         return $this->render("$this->namePlr", [
-            "$this->namePlr" => ($this->repository)->getAll(),
-            'title' => "Все $this->namePlrInRus"
+            "$this->namePlr" => $this->repository->getAll(),
+            'id_user' => $this->request->session("user")
         ]);
     }
 
     public function oneAction()
     {
+
         return $this->render("$this->nameSingle", [
-            "$this->nameSingle" => ($this->repository)->getOne($this->getId()),
-            'title' => 'Name'
+            "$this->nameSingle" => $this->repository->getOne($this->getId()),
+            'id_user' => $this->request->session("user")
+
         ]);
     }
+
 
     public function addToDBAction()
     {
         if ($this->isPost()) {
-            ($this->service)->fillUser($this->request->post());
+            ($this->service)->fillUser($this->request->post(), $this->repository, $this->request);
 
             return header("Location:/$this->nameSingle");
         }
@@ -69,26 +80,26 @@ abstract class CRUDController extends Controller
         $item = $this->repository->getOne($this->getId());
 
         if ($this->isPost()) {
-            $this->service->fillUser($this->request->post(), $item);
+            $this->service->fillUser($this->request->post(), $this->repository, $this->request, $item);
             return header("Location: /$this->nameSingle");
         }
 
         return $this->render($this->nameSingle . 'Update', [$this->nameSingle => $item]);
     }
 
+    public function deleteFromDBAction()
+    {
+        if ($id = $this->getId()) {
+            $this->service->delete($id, $this->repository);
+        }
+
+        header("location:/" . $this->nameSingle);
+    }
+
+
     protected function render($template, $params = [])
     {
         return $this->render->render($template, $params);
-    }
-
-    protected function getId()
-    {
-        return (int)$this->request->get('id');
-    }
-
-    protected function isPost()
-    {
-        return $this->request->isPost();
     }
 
 

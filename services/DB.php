@@ -2,35 +2,29 @@
 
 
 namespace App\services;
+
 use App\modules\Good;
 use App\traits\TSingleton;
 use App\modules\Model;
 
 class DB implements IDB
 {
-    use TSingleton;
-
-    private $config = [
-        'driver' => 'mysql',
-        'host' => 'localhost',
-        'db' => 'onlineshop',
-        'charset' => 'UTF8',
-        'username' => 'root',
-        'password' => 'root',
-
-    ];
+    private $config = [];
     protected $connect;
 
-    protected function getConnection($params = []){
+    public function __construct($config)
+    {
+        $this->config = $config;
+    }
 
-        if(empty($this->connect)){
+    protected function getConnection()
+    {
+        if (empty($this->connect)) {
             $this->connect = new \PDO(
                 $this->getPrepareDsnString(),
                 $this->config['username'],
                 $this->config['password']
-
             );
-
             $this->connect->setAttribute
             (
                 \PDO::ATTR_DEFAULT_FETCH_MODE,
@@ -51,39 +45,39 @@ class DB implements IDB
         );
     }
 
-    protected function query($sql, $params = [] )
+    protected function query($sql, $params = [])
     {
         $PDOStatement = $this->getConnection()->prepare($sql);
         $PDOStatement->execute($params);
         return $PDOStatement;
     }
 
-    public function find(string $sql,$params = [])
+    public function find(string $sql, $params = [])
     {
         return $this->query($sql, $params)->fetch();
     }
 
-    public function findAll(string $sql )
+    public function findAll(string $sql, $params = [])
     {
-        return $this->query($sql )->fetchAll();
+        return $this->query($sql,$params)->fetchAll();
     }
 
-    public function execute(string $sql,  $params = [])
+    public function execute(string $sql, $params = [])
     {
         return $this->query($sql, $params);
     }
 
-    public function queryObj(string $sql,$class, $params = [])
+    public function queryObj(string $sql, $class, $params = [])
     {
-        $PDOStatement= $this->query($sql, $params );
-        $PDOStatement-> setFetchMode(\PDO::FETCH_CLASS, $class);
+        $PDOStatement = $this->query($sql, $params);
+        $PDOStatement->setFetchMode(\PDO::FETCH_CLASS, $class);
         return $PDOStatement->fetch();
     }
 
-    public function queryObjs(string $sql,$class, $params = [])
+    public function queryObjs(string $sql, $class, $params = [])
     {
-        $PDOStatement= $this->query($sql );
-        $PDOStatement-> setFetchMode(\PDO::FETCH_CLASS, $class);
+        $PDOStatement = $this->query($sql, $params);
+        $PDOStatement->setFetchMode(\PDO::FETCH_CLASS, $class);
         return $PDOStatement->fetchAll();
 
     }

@@ -4,6 +4,9 @@
 namespace App\Repositories;
 
 
+use App\entities\User;
+use App\main\AppCall;
+
 class UserRepository extends Repository
 {
 
@@ -21,5 +24,17 @@ class UserRepository extends Repository
     public function getEntityClass(): string
     {
         return  User::class;
+    }
+
+    public function getRepositoryClass():object
+    {
+        return AppCall::call()->userRepository;
+    }
+
+    public function getOneByLogin($login)
+    {
+        $tableName = $this->getTableName();
+        $sql = "SELECT * FROM {$tableName} WHERE login = :login";
+        return $this->bd->queryObj($sql, $this->getEntityClass(), [':login' => "$login"]);
     }
 }

@@ -2,24 +2,32 @@
 
 
 namespace App\controllers;
+
+use App\main\AppCall;
 use App\modules\Order;
 
 class OrderController extends CRUDController
 {
-    public $modelName = Order::class;
     public $nameSingle = "order";
     public $namePlr = "orders";
 
-
-    public function createAction()
+    public function getRepository(): object
     {
-        if (!$this->request->isPost()){
-            return $this->render('createOrder');
-        }
+        return AppCall::call()->orderRepository;
+    }
 
-        $this->CRUDServices->addToDB($this->request, $this->render,$this->model,$this->nameSingle);
-        $this->request->unsetInSession("good");
+    public function getService(): object
+    {
+        return AppCall::call()->orderService;
+    }
 
+    public function oneAction()
+    {
+        $order = ($this->repository->getOrder($this->getId()));;
 
+        return $this->render("$this->nameSingle", [
+            "$this->nameSingle" => $order,
+            "products" => $order->order_list,
+        ]);
     }
 }

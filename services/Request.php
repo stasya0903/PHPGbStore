@@ -15,6 +15,7 @@ class Request
 
     public function __construct()
     {
+        session_start();
         $this->requestString = $_SERVER['REQUEST_URI'];
         $this->params = [
             'get' => $_GET,
@@ -60,19 +61,44 @@ class Request
         return array();
     }
 
-    public function session($params = '', $params2 = "")
+    public function session($param1 = '', $param2 = "")
     {
-        if (empty($params)) {
-            return $this->session;
+        if (!empty($this->session[$param1][$param2])) {
+            return $this->session[$param1][$param2];
         }
 
-        if (!empty($this->session[$params])) {
-            return $this->session[$params];
+
+        if (!empty($this->session[$param1])) {
+            return $this->session[$param1];
         }
 
+        if (!empty($this->session[$param1])) {
+            return $this->session[$param1];
+        }
 
         return array();
     }
+
+    public function setSession($session, $object, $param = "")
+    {
+        if (!isset($_SESSION[$session])) {
+            $_SESSION[$session] = [];
+        }
+        if (!empty($param)) {
+            if (!isset($_SESSION[$session][$param])) {
+                $_SESSION[$session][$param] = "";
+            } else {
+                $_SESSION[$session][$param] = $object;
+            }
+            $_SESSION[$session][$param] = $object;
+
+
+        } else {
+            $_SESSION [$session] = $object;
+        }
+
+    }
+
 
     public function post($params = '')
     {
@@ -145,21 +171,15 @@ class Request
         return $_SERVER['REQUEST_METHOD'] == "POST";
     }
 
-    public function setSession($param, $value, $param2 = '', $amount = '')
+
+    public function unsetInSession($param1, $param2 = [])
     {
         if (!empty($param2)) {
-            $_SESSION["goods"][$param][$param2] = ($value + $amount);
-        } else {
-            $_SESSION["goods"][$param] = $value;
-        }
-    }
-
-    public function unsetInSession($param1, $param2 )
-    {
-        if(!empty($param2)){
             unset($_SESSION[$param1][$param2]);
+        } else {
+            unset($_SESSION[$param1]);
         }
-        unset($_SESSION[$param1]);
+
     }
 }
 

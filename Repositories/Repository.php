@@ -3,7 +3,7 @@
 
 namespace App\Repositories;
 
-
+use App\main\AppCall;
 use App\services\DB;
 use App\entities\Entity;
 
@@ -12,11 +12,12 @@ abstract class Repository
     /**
      * @var DB
      */
-    protected $bd;
+    public $bd;
+
 
     public function __construct()
     {
-        $this->bd = DB::getInstance();
+        $this->bd = AppCall::call()->db;
     }
 
     /**
@@ -29,7 +30,13 @@ abstract class Repository
      * Возвращает имя сущности
      * @return string
      */
-    abstract public function getEntityClass(): string;
+    abstract public function getEntityClass(): string ;
+
+    /**
+     * Возвращает обьект с Репозиторием
+     * @return object
+     */
+    abstract public function getRepositoryClass();
 
     public function getOne($id)
     {
@@ -37,6 +44,8 @@ abstract class Repository
         $sql = "SELECT * FROM {$tableName} WHERE id = :id";
         return $this->bd->queryObj($sql, $this->getEntityClass(), [':id' => $id]);
     }
+
+
 
     public function getAll()
     {
@@ -47,7 +56,7 @@ abstract class Repository
     /**
      * @param Entity $entity
      */
-    protected function insert(Entity $entity)
+    public function insert( $entity)
     {
         $dataToInsert = [];
         $params = [];
@@ -70,20 +79,28 @@ abstract class Repository
         $entity->id = $this->bd->lastInsertId();
     }
 
-    public function delete(Entity $entity)
+    public function delete($entity)
     {
         $tableName = $this->getTableName();
         $sql = "DELETE FROM {$tableName} WHERE id= :id ";
         return $this->bd->execute($sql, [':id' => $entity->id]);
     }
 
-    protected function update(Entity $entity)
+    protected function update($entity)
     {
         $allDataToInsert = [];
         $allValues = [];
 
         foreach ($entity as $data => $value) {
 
+
+            if (empty($value)){
+                continue;
+            }
+
+            if ($data == "statusOptions"|| $data == "summary" || $data == "order_list"){
+                continue;
+            }
             if ($data == 'id') {
                 $allValues[":${data}"] = $value;
                 continue;
@@ -104,14 +121,11 @@ abstract class Repository
 
     }
 
-    public function save(Entity $entity)
-
+    public function save($entity)
     {
-        if (!$entity->id) {
-
+        if (empty($entity->id)) {
             $this->insert($entity);
             return;
-
         }
         return $this->update($entity);
     }

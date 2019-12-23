@@ -14,6 +14,7 @@ abstract class Controller
     protected $render;
     protected $request;
 
+
     public function __construct(IRender $render, Request $request)
     {
         $this->render = $render;
@@ -51,6 +52,16 @@ abstract class Controller
     protected function render($template, $params = [])
     {
         return $this->render->render($template, $params);
+    }
+
+    public function getId()
+    {
+        return (int)$this->request->get('id');
+    }
+
+    protected function isPost()
+    {
+        return $this->request->isPost();
     }
 
 

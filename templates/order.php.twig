@@ -8,12 +8,6 @@
             <p class="card-text">Адресс {{ order.address }}</p>
             <p class="card-text">Телефон {{ order.phone }}</p>
             <p class="card-text">email {{ order.email }}</p>
-            <a href="/order/deleteFromDB?id={{ order.id }}">
-                <button class="comeBackBtn">Удалить из базы</button>
-            </a>
-            <a href="/order/one?id={{ order.id }}">
-                <button class="comeBackBtn">Подробнее</button>
-            </a>
         </div>
     </div>
 
@@ -29,22 +23,28 @@
         </thead>
         {% for product in products %}
         <tr>
-            <th scope="col">  {{ product.name }} </th>
-            <th scope="col">  {{ product.price }}  </th>
-            <th scope="col">  {{ product.count }}  </th>
-            <th scope="col">  {{ product.count * product.price }} </th>
+            <th scope="col">  {{ product.name_product }} </th>
+            <th scope="col">  {{ product.price_product }}  </th>
+            <th scope="col">  {{ product.amount }}  </th>
+            <th scope="col">  {{ product.total_price }} </th>
             <th scope="col">
                 <a href="/basket/add?id={{ product.id }}">
                     <button class="comeBackBtn">+</button>
                 </a>
-                <a href="/basket/delete?id={{ product.id }}">
+                <a href="/basket/delete?id={{ product.goods_id }}">
                     <button class="comeBackBtn">-</button>
                 </a>
             </th>
             {% endfor %}
     </table>
-    <p>Итого: {{ summary }}р.</p>
-    <div class=""><a href="/order/create">
-            <button class=\"comeBackBtn\">Оформить заказ</button>
-        </a></div>
+
+    <div>
+        <p>Итого: {{ summary }}р.</p>
+        <a href="/order/deleteFromDB?id={{ order.id }}">
+            <button class="comeBackBtn">Удалить из базы</button>
+        </a>
+        <a href="/order/update?id={{ order.id }}">
+            <button class="comeBackBtn">Изменить заказ</button>
+        </a>
+    </div>
 {% endblock %}

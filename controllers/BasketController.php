@@ -4,39 +4,36 @@
 namespace App\controllers;
 
 
-use App\modules\Good;
+use App\main\AppCall;
 
-class BasketController extends Controller
+
+class BasketController extends CRUDController
 {
     private $product;
+    protected $defaultAction = 'show';
 
     public function showAction()
     {
-        $products = $this->getProductsInBasket();
-        $summary = $this->getSummary($products);
-        //var_dump($products);
-        //session_destroy();
+
+        $products = $this->repository->getProductsInBasket($this->request);
+        $summary = $this->repository->getSummary($products);
         return $this->render('basket', ['products' => $products,
-                                                'summary'=>$summary]);
+            'summary' => $summary,
+            'id_user' => $this->request->session("user")]);
+
     }
 
 
     public function addAction()
     {
-        $id = $this->getID();
-        $product = (new Good)->getOne($id);
-        $productsInCart = $this->getProductsInBasket();
 
-        if (empty($productsInCart[$id])) {
-            $this->request->setSession($id, [
-                'id' => $product->id,
-                'price' => $product->price_product,
-                'count' => 1,
-                'name' => $product->name_product
-            ]);
+        $id = $this->getId();
+        if (empty($this->repository->getProductInBasket($id, $this->request))) {
+            $product = $this->service->getProduct($id);
         } else {
-            $this->request->setSession($id, $productsInCart[$id]['count'], "count", $amount = 1);
+            $product = $this->repository->getProductInBasket($id, $this->request);
         }
+        $this->repository->add($product, $this->request);
         header('location: ' . $_SERVER['HTTP_REFERER']);
 
     }
@@ -44,37 +41,33 @@ class BasketController extends Controller
     public function deleteAction()
     {
         $id = $this->getID();
-        $items = $this->getProductsInBasket();
-        if ($items[$id]["count"] > 1) {
-            $this->request->setSession($id, $items[$id]['count'], "count", $amount = -1);;
-        } else {
-            $this->request->unsetInSession("goods", $id);
-
-        }
+        $this->repository->deleteProduct($id, $this->request);
         header('location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
 
-
-    protected function getID()
+    public function updateOrderListAction()
     {
-        return $this->request->get('id');
-    }
+        $products = $this->repository->getProductsObjects($this->request);
 
-    protected function getProductsInBasket()
-    {
-        return $this->request->session("goods");
-    }
-
-    private function getSummary($products)
-    {
-        $total = 0;
-
-        foreach ($products as $idProduct => $product) {
-            $totalGoodPrice = (int)$product['count'] * (int)$product['price'];
-            $total += $totalGoodPrice;
+        foreach ($products as $product) {
+            unset($product["name_product"]);
+            unset($product["img_dir"]);
+            unset($product["description_short"]);
+            unset($product["description_short"]);
+            $this->service->fillUser($product, $this->repository, $this->request);
         }
+        $this->request->unsetInSession("order_list");
+        header('location:/orderAuth/');
+    }
 
-        return $total;
+    public function getRepository()
+    {
+        return AppCall::call()->basketRepository;
+    }
+
+    public function getService()
+    {
+        return AppCall::call()->basketService;
     }
 }

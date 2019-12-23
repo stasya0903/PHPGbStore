@@ -14,7 +14,8 @@ class TwigRender implements IRender
 
     public function __construct()
     {
-        $loader = new FilesystemLoader([dirname(dirname(__DIR__)) . '/templates/',
+        $loader = new FilesystemLoader([dirname(dirname(__DIR__)) . '/templates/Admin',
+                dirname(dirname(__DIR__)) . '/templates/AuthUser',
                 dirname(dirname(__DIR__)) . '/templates',]
 
         );

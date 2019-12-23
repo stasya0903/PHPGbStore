@@ -5,6 +5,7 @@ namespace App\Repositories;
 
 
 use App\entities\Order;
+use App\main\AppCall;
 
 class OrderRepository extends Repository
 {
@@ -20,15 +21,26 @@ class OrderRepository extends Repository
     /**
      * @inheritDoc
      */
-    public function getEntityClass(): string
+    public function getEntityClass(): string 
     {
         return Order::class;
     }
-    public function getOne($id)
+    public function getRepositoryClass():object
     {
-        $tableName = $this->getTableName();
+        return AppCall::call()->orderRepository;
+    }
 
-        $sql = "SELECT *
+
+    public function getOrder($id)
+    {
+        $order = $this->getOne($id);
+
+        $sql = "SELECT order_list.goods_id as goods_id,
+                        goods.name_product as name_product,
+                        goods.price_product as price_product,
+                        order_list.count as amount,
+                        (order_list.count * goods.price_product) as total_price
+                        
                 FROM orders 
                 LEFT JOIN order_list ON order_list.order_id = orders.id
                 lEFT JOIN goods ON order_list.goods_id = goods.id
@@ -36,14 +48,17 @@ class OrderRepository extends Repository
                     orders.id = :id";
 
 
-
-        return $this->bd->find($sql, [':id' => $id]);
+        $order_list = ($this->bd->findAll($sql, [':id' => $id]));
+        $order->order_list = $order_list;
+        $order->summary = $order->getSummary();
+        return $order;
     }
 
-    public function getAll()
-    {
-        $tableName = $this->getTableName();
-        $sql = "SELECT * FROM {$tableName}";
-        return $this->bd->findAll($sql);
+
+    public function addToDB($entity){
+        $this->save($entity);
+
     }
+
+
 }
