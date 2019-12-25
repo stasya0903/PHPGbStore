@@ -12,15 +12,6 @@ class UserAuthController extends UserController
     public $nameSingle = "userAuth";
     public $namePlr = "usersAuth";
 
-    public function run($action)
-    {
-        if (empty($this->request->session("user"))) {
-            return header('Location: /auth');
-        }
-
-        return parent::run($action);
-    }
-
     public function getRepository()
     {
         return AppCall::call()->userAuthRepository;
@@ -28,7 +19,16 @@ class UserAuthController extends UserController
 
     public function getService()
     {
-        return AppCall::call()->CRUDService;
+        return AppCall::call()->userService;
+    }
+
+    public function run($action)
+    {
+        if (empty($this->request->session("user"))) {
+            return header('Location: /auth');
+        }
+
+        return parent::run($action);
     }
 
     public function oneAction()

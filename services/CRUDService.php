@@ -6,7 +6,7 @@ use App\entities\Entity;
 use App\Repositories\Repository;
 
 
-class CRUDService
+abstract class CRUDService
 {
     /**
      * @param $params
@@ -15,17 +15,14 @@ class CRUDService
      * @param Entity $entity
      * @return array
      */
-    public function fillUser($params, $repository, $request, $entity = null)
+    public function fill($params, $repository, $request, $entity = null)
     {
-        /*if ($this->hasErrors($params)) {
+        if ($this->hasErrors($params)) {
             return [
                 'msg' => 'Нет данных',
                 'success' => false,
             ];
         }
-        TO DO add the to check all the modules*/
-
-
 
         if (empty($entity)) {
             $className = $repository->getEntityClass();
@@ -47,7 +44,7 @@ class CRUDService
             $entity->$property = $value;
         }
 
-        ($repository)->save($entity);
+        $this->save($repository, $entity);
 
         return [
             'success' => true,
@@ -67,15 +64,13 @@ class CRUDService
         $repository->delete($entity);
     }
 
-
-    protected function hasErrors($params)
+    public function save(Repository $repository, $entity)
     {
-        if (empty($params['login']) || empty($params['password'])) {
-            return true;
-        }
-
-        return false;
+        return ($repository)->save($entity);
     }
+
+
+    abstract protected function hasErrors($params);
 
 
 }

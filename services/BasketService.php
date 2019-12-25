@@ -18,7 +18,8 @@ class BasketService extends CRUDService
     }
 
 
-
-
-
+    public function hasErrors($params)
+    {
+        return false;
+    }
 }

@@ -20,14 +20,13 @@ class OrderAuthController extends OrderController
 
     public function getService(): object
     {
-        return AppCall::call()->CRUDService;
+        return AppCall::call()->orderService;
     }
 
     public function allAction()
     {
         return $this->render("$this->namePlr", [
             "$this->namePlr" => $this->repository->getAllOrders($this->request->session("user"))
-
         ]);
     }
 
@@ -40,7 +39,7 @@ class OrderAuthController extends OrderController
         if ($this->isPost()) {
             $params = $this->request->post();
             $params["user_id"] = $this->request->get("userId");
-            $saveOrder = ($this->service)->fillUser($params, $this->repository, $this->request);
+            $saveOrder = ($this->service)->fill($params, $this->repository, $this->request);
 
             if ($saveOrder) {
                 $productsInBasket = $this->request->session("order_list");
@@ -54,9 +53,5 @@ class OrderAuthController extends OrderController
             }
 
         }
-
-
     }
-
-
 }

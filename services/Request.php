@@ -172,7 +172,7 @@ class Request
     }
 
 
-    public function unsetInSession($param1, $param2 = [])
+    public function unsetInSession($param1, $param2 = null)
     {
         if (!empty($param2)) {
             unset($_SESSION[$param1][$param2]);

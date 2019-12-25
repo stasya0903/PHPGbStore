@@ -13,17 +13,18 @@ use App\services\Request;
 class BasketRepository extends Repository
 {
     protected $sessionName;
+
     /**
      * @return  string with session name
      */
 
     public function getTableName(): string
     {
-        return  "order_list";
+        return "order_list";
     }
 
     /**
-     * @inheritDoc
+     * @return string with entity class name
      */
     public function getEntityClass(): string
     {
@@ -35,7 +36,7 @@ class BasketRepository extends Repository
      */
     public function getRepositoryClass()
     {
-       AppCall::call()->basketRepository;
+        AppCall::call()->basketRepository;
     }
 
     public function getProductsInBasket(Request $request)
@@ -43,24 +44,27 @@ class BasketRepository extends Repository
         return $request->session($this->getTableName());
     }
 
-    public function getProductInBasket($id,$request){
-        $products =  $this->getProductsInBasket($request);
-        if (empty($products["$id"])){
+    public function getProductInBasket($id, $request)
+    {
+        $products = $this->getProductsInBasket($request);
+        if (empty($products["$id"])) {
             return null;
         }
         return $products["$id"];
 
     }
 
-    public function addNew($product,$request)
+    public function addNew($product, $request)
     {
-        $request->setSession($this->getTableName(), $product, $product["goods_id"] );
+        $request->setSession($this->getTableName(), $product, $product["goods_id"]);
     }
+
     public function changeCount($product, $request, $count)
     {
         $product["count"] = $product["count"] + $count;
         $this->addNew($product, $request);
     }
+
     public function add($product, $request)
     {
         if (empty($this->getProductInBasket($product["goods_id"], $request))) {
@@ -72,7 +76,8 @@ class BasketRepository extends Repository
 
     }
 
-    public function deleteProduct($id, Request $request){
+    public function deleteProduct($id, Request $request)
+    {
 
         $item = $this->getProductInBasket($id, $request);
         if ($item["count"] > 1) {
@@ -97,20 +102,20 @@ class BasketRepository extends Repository
         return $total;
     }
 
-    public function getProductsObjects ($request){
-        $products = $this->getProductsInBasket( $request);
+    public function getProductsObjects($request)
+    {
+        $products = $this->getProductsInBasket($request);
         return (object)$products;
     }
 
-    public function saveProductsAction ($request, CRUDService $service,$repository)
+    public function saveProductsAction($request, CRUDService $service, $repository)
     {
-        $products = $this->getProductsObjects ($request);
-       foreach ($products as $product){
-            $service->fillUser($product,$repository ,$request);
+        $products = $this->getProductsObjects($request);
+        foreach ($products as $product) {
+            $service->fill($product, $repository, $request);
             $this->insert($product);
         }
     }
-
 
 
 }

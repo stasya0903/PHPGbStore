@@ -20,7 +20,7 @@ class UserController extends CRUDController
 
     public function getService()
     {
-        return AppCall::call()->CRUDService;
+        return AppCall::call()->userService;
     }
 
     public function authAction()

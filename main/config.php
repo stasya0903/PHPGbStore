@@ -29,11 +29,17 @@ return [
         'CRUDService' => [
             'class' => \App\services\CRUDService::class,
         ],
+        'orderService' => [
+            'class' => \App\services\OrderService::class,
+        ],
         'basketService' => [
             'class' => \App\services\BasketService::class,
         ],
-        'orderService' => [
-            'class' => \App\services\OrderService::class,
+        'goodService' => [
+            'class' => \App\services\GoodService::class,
+        ],
+        'userService' => [
+            'class' => \App\services\UserService::class,
         ],
         'basketRepository' => [
             'class' => \App\Repositories\BasketRepository::class,

@@ -11,7 +11,7 @@ use App\main\AppCall;
 class OrderAuthRepository extends OrderRepository
 {
     /**
-     * @inheritDoc
+     * @return string with table name
      */
     public function getTableName(): string
     {
@@ -19,7 +19,7 @@ class OrderAuthRepository extends OrderRepository
     }
 
     /**
-     * @inheritDoc
+     * @return string with entity class name
      */
     public function getEntityClass(): string
     {

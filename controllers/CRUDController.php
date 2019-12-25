@@ -20,7 +20,6 @@ abstract class CRUDController extends Controller
 {
     protected $nameSingle = "";
     protected $namePlr = "";
-    protected $namePlrInRus = "";
     protected $render;
     protected $service;
     protected $repository;
@@ -59,12 +58,10 @@ abstract class CRUDController extends Controller
         ]);
     }
 
-
     public function addToDBAction()
     {
         if ($this->isPost()) {
-            ($this->service)->fillUser($this->request->post(), $this->repository, $this->request);
-
+            ($this->service)->fill($this->request->post(), $this->repository, $this->request);
             return header("Location:/$this->nameSingle");
         }
 
@@ -80,7 +77,7 @@ abstract class CRUDController extends Controller
         $item = $this->repository->getOne($this->getId());
 
         if ($this->isPost()) {
-            $this->service->fillUser($this->request->post(), $this->repository, $this->request, $item);
+            $this->service->fill($this->request->post(), $this->repository, $this->request, $item);
             return header("Location: /$this->nameSingle");
         }
 
@@ -92,7 +89,6 @@ abstract class CRUDController extends Controller
         if ($id = $this->getId()) {
             $this->service->delete($id, $this->repository);
         }
-
         header("location:/" . $this->nameSingle);
     }
 

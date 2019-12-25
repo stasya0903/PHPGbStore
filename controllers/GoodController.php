@@ -20,6 +20,6 @@ class GoodController extends CRUDController
 
     public function getService(): object
     {
-        return AppCall::call()->CRUDService;
+        return AppCall::call()->goodService;
     }
 }

@@ -34,7 +34,6 @@ abstract class Controller
 
             return $this->$method();
         }
-
         try {
             if (method_exists($this, $method)) {
 

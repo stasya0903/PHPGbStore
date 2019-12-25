@@ -11,7 +11,7 @@ class GoodRepository extends Repository
 {
 
     /**
-     * @inheritDoc
+     * @return string with table name
      */
     public function getTableName(): string
     {
@@ -19,7 +19,7 @@ class GoodRepository extends Repository
     }
 
     /**
-     * @inheritDoc
+     * @return string with entity class name
      */
     public function getEntityClass(): string
     {

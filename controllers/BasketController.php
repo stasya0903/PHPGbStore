@@ -12,6 +12,16 @@ class BasketController extends CRUDController
     private $product;
     protected $defaultAction = 'show';
 
+    public function getRepository()
+    {
+        return AppCall::call()->basketRepository;
+    }
+
+    public function getService()
+    {
+        return AppCall::call()->basketService;
+    }
+
     public function showAction()
     {
 
@@ -23,10 +33,8 @@ class BasketController extends CRUDController
 
     }
 
-
     public function addAction()
     {
-
         $id = $this->getId();
         if (empty($this->repository->getProductInBasket($id, $this->request))) {
             $product = $this->service->getProduct($id);
@@ -54,20 +62,14 @@ class BasketController extends CRUDController
             unset($product["name_product"]);
             unset($product["img_dir"]);
             unset($product["description_short"]);
-            unset($product["description_short"]);
-            $this->service->fillUser($product, $this->repository, $this->request);
+
+             $this->service->fill((array)$product, $this->repository, $this->request);
         }
+
         $this->request->unsetInSession("order_list");
+
         header('location:/orderAuth/');
     }
 
-    public function getRepository()
-    {
-        return AppCall::call()->basketRepository;
-    }
 
-    public function getService()
-    {
-        return AppCall::call()->basketService;
-    }
 }

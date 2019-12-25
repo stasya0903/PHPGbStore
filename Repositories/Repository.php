@@ -93,7 +93,6 @@ abstract class Repository
 
         foreach ($entity as $data => $value) {
 
-
             if (empty($value)){
                 continue;
             }

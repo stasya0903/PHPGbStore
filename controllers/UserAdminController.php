@@ -11,15 +11,6 @@ class UserAdminController extends CRUDController
     public $namePlr = "usersAdmin";
     protected $defaultAction = "one";
 
-    public function run($action)
-    {
-        if ($this->request->session("role") != 1) {
-            return header('Location: /auth');
-        }
-
-        return parent::run($action);
-    }
-
     public function getRepository()
     {
         return AppCall::call()->userAdminRepository;
@@ -27,7 +18,15 @@ class UserAdminController extends CRUDController
 
     public function getService()
     {
-        return AppCall::call()->CRUDService;
+        return AppCall::call()->userService;
+    }
+
+    public function run($action)
+    {
+        if ($this->request->session("role") != 1) {
+            return header('Location: /auth');
+        }
+        return parent::run($action);
     }
 
     public function oneAction()

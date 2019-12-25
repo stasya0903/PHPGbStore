@@ -6,7 +6,7 @@ namespace App\controllers;
 
 use App\main\AppCall;
 
-class GoodAuthController extends  CRUDController
+class GoodAuthController extends CRUDController
 {
     public $nameSingle = "goodAuth";
     public $namePlr = "goodsAuth";
@@ -18,6 +18,6 @@ class GoodAuthController extends  CRUDController
 
     public function getService(): object
     {
-        return AppCall::call()->CRUDService;
+        return AppCall::call()->goodService;
     }
 }

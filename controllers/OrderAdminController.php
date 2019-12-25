@@ -18,7 +18,7 @@ class OrderAdminController extends OrderController
 
     public function getService(): object
     {
-        return AppCall::call()->CRUDService;
+        return AppCall::call()->orderService;
     }
 
     public function updateAction()
@@ -31,30 +31,23 @@ class OrderAdminController extends OrderController
         if ($this->isPost()) {
             $orderParams = $this->request->post();
             unset($orderParams["order_list"]);
-            $this->service->fillUser($orderParams, $this->repository, $this->request, $order);
+            $this->service->fill($orderParams, $this->repository, $this->request, $order);
 
             $order_list = $this->request->post("order_list");
-                foreach ($order_list as $item => $value){
-                    $item = [
-                        "order_id" => $this->request->get("id"),
-                        "goods_id" => $item,
-                        "count" => $value
-                    ];
-                    $product = (object) $item;
-                    $this->repository->updateOrderList($product);
+            foreach ($order_list as $item => $value) {
+                $item = [
+                    "order_id" => $this->request->get("id"),
+                    "goods_id" => $item,
+                    "count" => $value
+                ];
+                $product = (object)$item;
+                $this->repository->updateOrderList($product);
 
-                }
-
-
-
-
-
-
+            }
             return header("Location: /$this->nameSingle");
         }
 
-
-        return $this->render("$this->nameSingle". 'Update', [
+        return $this->render("$this->nameSingle" . 'Update', [
             "$this->nameSingle" => $order,
             "products" => $order->order_list,
         ]);

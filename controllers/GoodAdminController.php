@@ -18,6 +18,6 @@ class GoodAdminController extends CRUDController
 
     public function getService()
     {
-        return AppCall::call()->CRUDService;
+        return AppCall::call()->goodService;
     }
 }

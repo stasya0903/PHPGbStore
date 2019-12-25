@@ -11,7 +11,7 @@ class OrderRepository extends Repository
 {
 
     /**
-     * @inheritDoc
+     * @return string with table name
      */
     public function getTableName(): string
     {
@@ -19,7 +19,7 @@ class OrderRepository extends Repository
     }
 
     /**
-     * @inheritDoc
+     * @return string with entity class name
      */
     public function getEntityClass(): string 
     {
@@ -52,12 +52,6 @@ class OrderRepository extends Repository
         $order->order_list = $order_list;
         $order->summary = $order->getSummary();
         return $order;
-    }
-
-
-    public function addToDB($entity){
-        $this->save($entity);
-
     }
 
 

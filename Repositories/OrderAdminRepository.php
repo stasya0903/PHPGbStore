@@ -11,7 +11,7 @@ use App\main\AppCall;
 class OrderAdminRepository extends OrderRepository
 {
     /**
-     * @inheritDoc
+     * @return string with table name
      */
     public function getTableName(): string
     {
