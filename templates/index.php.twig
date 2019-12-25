@@ -14,10 +14,12 @@
 <body>
         {% block sidebar %}
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="?c=user&a=all">Пользователи</a></li>
-                <li class="breadcrumb-item"><a href="?c=user&a=one&id=16">Пользователь</a></li>
-                <li class="breadcrumb-item"><a href="?c=good&a=all">Каталог</a></li>
+                <li class="breadcrumb-item"><a href="/user">Пользователи</a></li>
+                <li class="breadcrumb-item"><a href="/good">Каталог</a></li>
+                <li class="breadcrumb-item"><a href="/basket/show">Корзина</a></li>
             </ol>
+        {% endblock %}
+        {% block basket %}
         {% endblock %}
 
 <div class="container">{% block content %}{% endblock %}</div>

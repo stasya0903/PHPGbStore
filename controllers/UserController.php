@@ -8,7 +8,8 @@ use App\modules\User;
 class UserController extends CRUDController
 {
     public $modelName = User::class;
-    public $item = "user";
+    public $nameSingle = "user";
+    public $namePlr = "users";
 
 
 }

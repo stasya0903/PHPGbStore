@@ -62,7 +62,6 @@ abstract class Model
         $values = implode(", ", array_keys($params));
 
         $sql = "INSERT INTO {$tableName}( {$data}) VALUES ($values)";
-
        $this->bd->execute($sql, $params);
        $this->id = $this->bd->lastInsertId();
     }
@@ -107,14 +106,20 @@ abstract class Model
     public function save()
 
     {
-        $id = $this->id ?: '';
+        $id = '';
+        if (!empty($this->id)) {
+            $id = $this->id;
+        }
+
 
         if (!empty($id) && $this->getOne($id)) {
 
             return $this->update();
 
+
         }
         return $this->insert();
+
     }
 
 }

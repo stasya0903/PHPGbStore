@@ -1,38 +1,37 @@
 <?php
+
+use App\exceptions\AddressNotFoundException;
 use App\services\Autoload;
 use App\services\DB;
 use App\modules\Good;
 use App\modules\User;
 use App\modules\Order;
 use App\modules\Feedback;
+use App\services\renders\TwigRender;
 
-require_once dirname(__DIR__) .'/vendor/autoload.php';
-//include dirname(__DIR__) . '/vendor/autoload.php';
-//require_once 'Twig/Autoloader.php';
-//Twig_Autoloader::register();
+session_start();
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-//include dirname(__DIR__) . '/services/Autoload.php';
-//var_dump(dirname(__DIR__) . '/services/Autoload.php');
-//spl_autoload_register([new Autoload(), 'loadClass']);
+$request = new \App\services\Request();
+$controllerName = $request->getControllerName() ?: 'user';
+$actionName = $request->getActionName();
 
-$controllerName = "user";
-$actionName = '';
+new \Twig\Loader\FilesystemLoader();
 
-if (!(empty($_GET['c']))){
-    $controllerName = $_GET['c'];
+$ControllerClass = 'App\\controllers\\' . ucfirst($controllerName) . 'Controller';
+
+try {
+    if(!class_exists($ControllerClass)){
+        throw new AddressNotFoundException();
+    }
+    $controller = new $ControllerClass(new TwigRender(), $request);
+    echo $controller->run($actionName);
+
+}catch ( AddressNotFoundException $e){
+   echo  ( new TwigRender())->render('error');
+
 }
 
-if (!empty($_GET['a'])){
-    $actionName = $_GET['a'];
-}
-
-
-$ControllerClass = 'App\\controllers\\' . ucfirst($controllerName) . 'Controller' ;
-
-if (class_exists($ControllerClass)){
-    $controller = new $ControllerClass(new \App\services\renders\TwigRender());
-    echo $controller -> run($actionName);
-}
 
 
 
