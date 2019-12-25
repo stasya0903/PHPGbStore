@@ -37,8 +37,9 @@ class OrderAuthController extends OrderController
         }
 
         if ($this->isPost()) {
+            $userId = $this->request->get("userId");
             $params = $this->request->post();
-            $params["user_id"] = $this->request->get("userId");
+            $params["user_id"] = $userId;
             $saveOrder = ($this->service)->fill($params, $this->repository, $this->request);
 
             if ($saveOrder) {
@@ -46,6 +47,7 @@ class OrderAuthController extends OrderController
                 $OrderId = $this->repository->bd->lastInsertId();
 
                 foreach ($productsInBasket as $product => $values) {
+                    $values['user_id'] = $userId;
                     $values['order_id'] = $OrderId;
                     $this->request->setSession("order_list", $values, $product);
                 }
