@@ -3,61 +3,100 @@
 
 namespace App\controllers;
 
-
-use App\modules\Good;
+use App\entities\Entity;
+use App\Repositories\Repository;
+use App\services\CRUDService;
 use App\services\renders\IRender;
-use App\services\renders\TmpRender;
-use App\services\CRUD\DeleteFromDB;
-use App\services\CRUD\AddToDB;
-use App\services\CRUD\RenderFromDB;
+use App\services\Request;
 
-class CRUDController extends Controller
+
+/**
+ * @property IRender render;
+ * @property CRUDService service;
+ * @property Repository repository;
+ */
+abstract class CRUDController extends Controller
+
 {
-    protected $model;
-    protected $modelName = "";
-    protected $item = "";
+    protected $nameSingle = "";
+    protected $namePlr = "";
     protected $render;
-    protected $delete;
-    protected $add;
-    protected $renderFromDB;
+    protected $service;
+    protected $repository;
+
+    abstract public function getRepository();
+
+    abstract public function getService();
+
     /**
-     * @var DeleteFromDB
+     * @param IRender $render
+     * @param Request $request
      */
 
-
-    public function __construct(IRender$render)
+    public function __construct(IRender $render, Request $request)
     {
-        $this->render = $render;
-        $this->model = new $this->modelName;
-        $this->delete = new DeleteFromDB();
-        $this->add = new AddtoDB();
-        $this->renderFromDB = new RenderFromDB();
-
+        parent::__construct($render, $request);
+        $this->repository = $this->getRepository();
+        $this->service = $this->getService();
     }
+
     public function allAction()
     {
-       return  $this->renderFromDB->all($this->model,$this->render, $this->item);
+        return $this->render("$this->namePlr", [
+            "$this->namePlr" => $this->repository->getAll(),
+            'id_user' => $this->request->session("user")
+        ]);
     }
+
     public function oneAction()
     {
-       return  $this->renderFromDB->one($this->model,$this->render, $this->item);
+
+        return $this->render("$this->nameSingle", [
+            "$this->nameSingle" => $this->repository->getOne($this->getId()),
+            'id_user' => $this->request->session("user")
+
+        ]);
     }
 
-    public function addToDBAction ()
+    public function addToDBAction()
     {
-        $this->delete->delete($this->model, $this->item);
+        if ($this->isPost()) {
+            ($this->service)->fill($this->request->post(), $this->repository, $this->request);
+            return header("Location:/$this->nameSingle");
+        }
+
+        return $this->render($this->nameSingle . "Add");
     }
 
-    public function deleteFromDBAction ()
+    public function updateAction()
     {
-        $this->delete->delete($this->model, $this->item);
+        if (empty($this->getId())) {
+            return header("Location: /$this->nameSingle");
+        }
+
+        $item = $this->repository->getOne($this->getId());
+
+        if ($this->isPost()) {
+            $this->service->fill($this->request->post(), $this->repository, $this->request, $item);
+            return header("Location: /$this->nameSingle");
+        }
+
+        return $this->render($this->nameSingle . 'Update', [$this->nameSingle => $item]);
     }
+
+    public function deleteFromDBAction()
+    {
+        if ($id = $this->getId()) {
+            $this->service->delete($id, $this->repository);
+        }
+        header("location:/" . $this->nameSingle);
+    }
+
 
     protected function render($template, $params = [])
     {
         return $this->render->render($template, $params);
     }
-
 
 
 }
